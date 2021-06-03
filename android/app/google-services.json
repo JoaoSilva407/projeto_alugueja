@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "677616730341",
+    "project_id": "alugueja-app",
+    "storage_bucket": "alugueja-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677616730341:android:3006e154137e8c5197140c",
+        "android_client_info": {
+          "package_name": "com.alugueja.alugueja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "677616730341-qlcnst506d0e7rr6t026q18758m7hkr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjmX30nQbksgm6bfPbtHLtj8Rye-RyY-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "677616730341-qlcnst506d0e7rr6t026q18758m7hkr9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
