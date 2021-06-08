@@ -19,8 +19,6 @@ class _UserImagePickerState extends State<UserImagePicker> {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(
       source: ImageSource.camera,
-      imageQuality: 50,
-      maxWidth: 150,
     );
 
     setState(() {
@@ -28,6 +26,35 @@ class _UserImagePickerState extends State<UserImagePicker> {
     });
 
     widget.onImagePick(_pickedImageFile);
+  }
+
+  void _configurandoModalBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  leading: new Icon(
+                    Icons.add_a_photo,
+                    color: Colors.teal,
+                  ),
+                  title: new Text('Câmera'),
+                  onTap: _pickImage,
+                ),
+                ListTile(
+                  leading: new Icon(
+                    Icons.add_photo_alternate,
+                    color: Colors.indigo,
+                  ),
+                  title: new Text('Galeria'),
+                  onTap: _pickImage,
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   @override
@@ -48,7 +75,9 @@ class _UserImagePickerState extends State<UserImagePicker> {
               _pickedImageFile != null ? FileImage(_pickedImageFile) : null,
         ),
         TextButton.icon(
-          onPressed: _pickImage,
+          onPressed: () {
+            _configurandoModalBottomSheet(context);
+          },
           icon: Icon(Icons.image),
           label: Text('Adicionar Imagem'),
         ),

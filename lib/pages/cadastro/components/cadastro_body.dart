@@ -111,7 +111,6 @@ class _CadastroBodyState extends State<CadastroBody> {
                 key: ValueKey('email'),
                 decoration: InputDecoration(
                   labelText: 'E-mail',
-                  
                   prefixIcon: Icon(
                     Icons.email,
                   ),
@@ -133,7 +132,6 @@ class _CadastroBodyState extends State<CadastroBody> {
                 obscureText: _isHiddenPassword,
                 decoration: InputDecoration(
                   labelText: 'Senha',
-                  
                   prefixIcon: Icon(
                     Icons.lock,
                   ),

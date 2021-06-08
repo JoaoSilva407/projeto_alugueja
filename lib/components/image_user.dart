@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,13 +24,22 @@ class _ImageUserState extends State<ImageUser> {
       final picker = ImagePicker();
       final pickedImage = await picker.getImage(
         source: ImageSource.gallery,
-        imageQuality: 50,
-        maxWidth: 150,
       );
 
-      setState(() {
-        _pickedImageFile = File(pickedImage.path);
-      });
+      _pickedImageFile = File(pickedImage.path);
+
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('user_images')
+          .child(user.uid + '.jpg');
+
+      await ref.putFile(_pickedImageFile);
+      final url = await ref.getDownloadURL();
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'imageUrl': url});
     }
 
     void _configurandoModalBottomSheet(context) {

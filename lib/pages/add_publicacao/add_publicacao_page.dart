@@ -9,7 +9,7 @@ class AddPublicacaoPage extends StatelessWidget {
   Future<void> _sendPublication(ComercioModel comercioModel) async {
     final user = FirebaseAuth.instance.currentUser;
 
-    final userData = {
+    await FirebaseFirestore.instance.collection('publicacao').add({
       'titulo': comercioModel.titulo,
       'descricao': comercioModel.descricao,
       'endereco': comercioModel.endereco,
@@ -17,12 +17,9 @@ class AddPublicacaoPage extends StatelessWidget {
       'cidade': comercioModel.cidade,
       'estado': comercioModel.estado,
       'valor': comercioModel.valor,
-    };
-
-    await FirebaseFirestore.instance
-        .collection('publicacao')
-        .doc(user.uid)
-        .set(userData);
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+    });
   }
 
   @override
