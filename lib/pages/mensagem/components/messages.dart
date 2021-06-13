@@ -4,6 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Messages extends StatelessWidget {
+  final dynamic userIdUm;
+  final dynamic userIdDois;
+
+  const Messages({
+    Key key,
+    this.userIdUm,
+    this.userIdDois,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final User user = FirebaseAuth.instance.currentUser;
@@ -25,12 +34,19 @@ class Messages extends StatelessWidget {
         return ListView.builder(
           reverse: true,
           itemCount: chatDocs.length,
-          itemBuilder: (ctx, i) => MessageBubble(
-            chatDocs[i]['text'],
-            chatDocs[i]['userName'],
-            chatDocs[i]['userId'] == user.uid,
-            //key: ValueKey(chatDocs[i].hashCode),
-          ),
+          itemBuilder: (ctx, i) => chatDocs[i]['userIdUm'] == userIdUm &&
+                  chatDocs[i]['userIdDois'] == userIdDois
+              ? MessageBubble(
+                  chatDocs[i]['text'],
+                  chatDocs[i]['userName'],
+                  chatDocs[i]['userIdUm'] == user.uid
+                      ? true
+                      : chatDocs[i]['userIdDois'] == user.uid
+                          ? true
+                          : false,
+                  //key: ValueKey(chatDocs[i].hashCode),
+                )
+              : SizedBox(),
         );
       },
     );

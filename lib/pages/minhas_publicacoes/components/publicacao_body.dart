@@ -1,21 +1,21 @@
 import 'package:alugueja/pages/detalhes_publicacao/components/detalhes_publicacao_body.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
 
-class FeedPublicacaoPage extends StatelessWidget {
+class PublicacaoBody extends StatelessWidget {
+  final User user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('publicacao')
-          .orderBy(
-            'createdAt',
-            descending: true,
-          )
+          .where("userId", isEqualTo: user.uid)
           .snapshots(),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -78,7 +78,8 @@ class FeedPublicacaoPage extends StatelessWidget {
                               '+ detalhes',
                             ),
                             onPressed: () {
-                              Navigator.of(context).push(
+                              Navigator.push(
+                                context,
                                 MaterialPageRoute(
                                   builder: (context) => DetalhesPublicacaoBody(
                                     valorId: feedDocs[index].id,

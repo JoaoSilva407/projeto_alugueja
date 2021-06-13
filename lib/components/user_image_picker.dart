@@ -15,11 +15,15 @@ class UserImagePicker extends StatefulWidget {
 class _UserImagePickerState extends State<UserImagePicker> {
   File _pickedImageFile;
 
-  Future<void> _pickImage() async {
+  Future _pickImage(bool gallery) async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(
-      source: ImageSource.camera,
-    );
+    final pickedImage = gallery
+        ? await picker.getImage(
+            source: ImageSource.gallery,
+          )
+        : await picker.getImage(
+            source: ImageSource.camera,
+          );
 
     setState(() {
       _pickedImageFile = File(pickedImage.path);
@@ -41,7 +45,9 @@ class _UserImagePickerState extends State<UserImagePicker> {
                     color: Colors.teal,
                   ),
                   title: new Text('Câmera'),
-                  onTap: _pickImage,
+                  onTap: () {
+                    _pickImage(false);
+                  },
                 ),
                 ListTile(
                   leading: new Icon(
@@ -49,7 +55,9 @@ class _UserImagePickerState extends State<UserImagePicker> {
                     color: Colors.indigo,
                   ),
                   title: new Text('Galeria'),
-                  onTap: _pickImage,
+                  onTap: () {
+                    _pickImage(true);
+                  },
                 ),
               ],
             ),

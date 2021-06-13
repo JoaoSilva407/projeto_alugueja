@@ -5,6 +5,14 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 
 class NewMessage extends StatefulWidget {
+  final dynamic userIdUm;
+  final dynamic userIdDois;
+
+  const NewMessage({
+    Key key,
+    this.userIdUm,
+    this.userIdDois,
+  }) : super(key: key);
   @override
   _NewMessageState createState() => _NewMessageState();
 }
@@ -24,7 +32,8 @@ class _NewMessageState extends State<NewMessage> {
     FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessage,
       'createdAt': Timestamp.now(),
-      'userId': user.uid,
+      'userIdUm': widget.userIdUm,
+      'userIdDois': widget.userIdDois,
       'userName': userData['name'],
     });
 

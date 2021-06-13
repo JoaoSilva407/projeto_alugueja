@@ -1,6 +1,7 @@
 import 'package:alugueja/components/rounded_button.dart';
 import 'package:alugueja/models/comercio_model.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 
 import '../../../constants.dart';
 
@@ -18,6 +19,52 @@ class AddPublicacaoBody extends StatefulWidget {
 class _AddPublicacaoBodyState extends State<AddPublicacaoBody> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final ComercioModel _comercioModel = ComercioModel();
+  List<Asset> _images = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(_images.length, (index) {
+        Asset asset = _images[index];
+        return AssetThumb(
+          asset: asset,
+          width: 300,
+          height: 300,
+        );
+      }),
+    );
+  }
+
+  Future<void> loadAssets() async {
+    List<Asset> resultList = [];
+    String error = 'No Error Dectected';
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 10,
+        enableCamera: true,
+        selectedAssets: _images,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "ImageX",
+          allViewTitle: "All Photos",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#ffffff",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
+    }
+    setState(() {
+      _images = resultList;
+    });
+  }
 
   _submit() {
     bool isValido = _formKey.currentState.validate();
@@ -36,6 +83,23 @@ class _AddPublicacaoBodyState extends State<AddPublicacaoBody> {
         key: _formKey,
         child: Column(
           children: [
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 5,
+              ),
+              height: 200,
+              child: buildGridView(),
+              color: Colors.grey,
+            ),
+            TextButton.icon(
+              onPressed: loadAssets,
+              icon: Icon(Icons.add_photo_alternate_rounded),
+              label: Text('Adicionar imagem'),
+            ),
             TextFormField(
               textCapitalization: TextCapitalization.words,
               enableSuggestions: false,

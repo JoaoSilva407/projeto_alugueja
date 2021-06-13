@@ -20,11 +20,15 @@ class _ImageUserState extends State<ImageUser> {
     final User user = FirebaseAuth.instance.currentUser;
     File _pickedImageFile;
 
-    Future<void> _pickImage() async {
+    Future _pickImage(bool camera) async {
       final picker = ImagePicker();
-      final pickedImage = await picker.getImage(
-        source: ImageSource.gallery,
-      );
+      final pickedImage = camera
+          ? await picker.getImage(
+              source: ImageSource.camera,
+            )
+          : await picker.getImage(
+              source: ImageSource.gallery,
+            );
 
       _pickedImageFile = File(pickedImage.path);
 
@@ -50,19 +54,24 @@ class _ImageUserState extends State<ImageUser> {
               child: Wrap(
                 children: <Widget>[
                   ListTile(
-                      leading: new Icon(
-                        Icons.add_a_photo,
-                        color: Colors.teal,
-                      ),
-                      title: new Text('Câmera'),
-                      onTap: () => {}),
+                    leading: new Icon(
+                      Icons.add_a_photo,
+                      color: Colors.teal,
+                    ),
+                    title: new Text('Câmera'),
+                    onTap: () {
+                      _pickImage(true);
+                    },
+                  ),
                   ListTile(
                     leading: new Icon(
                       Icons.add_photo_alternate,
                       color: Colors.indigo,
                     ),
                     title: new Text('Galeria'),
-                    onTap: _pickImage,
+                    onTap: () {
+                      _pickImage(false);
+                    },
                   ),
                   ListTile(
                     leading: new Icon(

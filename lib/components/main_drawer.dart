@@ -1,5 +1,6 @@
 import 'package:alugueja/pages/bem_vindo/bem_vindo_page.dart';
 import 'package:alugueja/pages/mensagem/mensagem_page.dart';
+import 'package:alugueja/pages/minhas_publicacoes/publicacao_page.dart';
 import 'package:alugueja/pages/perfil/perfil_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +92,25 @@ class MainDrawer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PerfilPage(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.text_snippet,
+                ),
+                title: Text(
+                  'Minhas publicações',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PublicacaoPage(),
                     ),
                   );
                 },
