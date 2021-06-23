@@ -3,6 +3,7 @@ import 'package:alugueja/components/notificacao.dart';
 import 'package:alugueja/pages/add_publicacao/add_publicacao_page.dart';
 import 'package:alugueja/pages/feed_publicacao/feed_publicacao_page.dart';
 import 'package:alugueja/pages/mensagem/mensagem_page.dart';
+import 'package:alugueja/pages/pesquisa/pesquisar_page.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 
@@ -28,7 +29,14 @@ class PaginaInicialPage extends StatelessWidget {
                   Icons.search,
                   color: quintaCor,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PesquisarPage(),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -57,9 +65,7 @@ class PaginaInicialPage extends StatelessWidget {
         body: TabBarView(
           children: [
             FeedPublicacaoPage(),
-             AddPublicacaoPage(),
-               
-             
+            AddPublicacaoPage(),
             Notificacao(),
             MensagemPage(),
           ],

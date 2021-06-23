@@ -1,5 +1,6 @@
-import 'package:alugueja/pages/detalhes_publicacao/components/detalhes_publicacao_body.dart';
+import 'package:alugueja/pages/detalhes_publicacao/components/detalhes_publicacao_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../../constants.dart';
 
 class FeedPublicacaoPage extends StatelessWidget {
+  final User user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -21,6 +24,10 @@ class FeedPublicacaoPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
+        if (snapshot.data == null) {
+          return Center(child: CircularProgressIndicator());
+        }
+
         final feedDocs = snapshot.data.docs;
         return Container(
           height: MediaQuery.of(context).size.height,
@@ -31,14 +38,47 @@ class FeedPublicacaoPage extends StatelessWidget {
                 elevation: 5,
                 margin: EdgeInsets.symmetric(
                   vertical: 8,
-                  horizontal: 5,
+                  horizontal: 12,
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      height: 100,
-                      color: primeiraCor,
-                    ),
+                    feedDocs[index]['imageUrl'] != ''
+                        ? Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image:
+                                    NetworkImage(feedDocs[index]['imageUrl']),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  primeiraCor,
+                                  quartaCor,
+                                ],
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.store, size: 100, color: segundaCor),
+                                Text(
+                                  'Adicione uma foto do seu negócio',
+                                  style: TextStyle(
+                                      fontSize: 20, color: segundaCor),
+                                ),
+                              ],
+                            ),
+                          ),
+                    SizedBox(height: 5),
                     ListTile(
                       title: Text(
                         feedDocs[index]['titulo'],
@@ -69,7 +109,7 @@ class FeedPublicacaoPage extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                feedDocs[index]['valor'],
+                                r'R$ ' + feedDocs[index]['valor'] + ',00',
                               ),
                             ],
                           ),
@@ -78,10 +118,19 @@ class FeedPublicacaoPage extends StatelessWidget {
                               '+ detalhes',
                             ),
                             onPressed: () {
+                              if (user.uid != feedDocs[index]['userId'])
+                                FirebaseFirestore.instance
+                                    .collection('notificacao')
+                                    .add({
+                                  'userId': feedDocs[index]['userId'],
+                                  'titulo': feedDocs[index]['titulo'],
+                                  'createdAt': Timestamp.now(),
+                                });
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => DetalhesPublicacaoBody(
+                                  builder: (context) => DetalhesPublicacaoPage(
                                     valorId: feedDocs[index].id,
+                                    userId: feedDocs[index]['userId'],
                                   ),
                                 ),
                               );

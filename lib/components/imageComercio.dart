@@ -5,16 +5,18 @@ import 'package:image_picker/image_picker.dart';
 
 import '../constants.dart';
 
-class UserImagePicker extends StatefulWidget {
+class ImageComercio extends StatefulWidget {
   final Function(File pickedImage) onImagePick;
 
-  UserImagePicker(this.onImagePick);
+  ImageComercio(
+    this.onImagePick,
+  );
 
   @override
-  _UserImagePickerState createState() => _UserImagePickerState();
+  _ImageComercioState createState() => _ImageComercioState();
 }
 
-class _UserImagePickerState extends State<UserImagePicker> {
+class _ImageComercioState extends State<ImageComercio> {
   File _pickedImageFile;
 
   Future _pickImage(bool gallery) async {
@@ -70,8 +72,8 @@ class _UserImagePickerState extends State<UserImagePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 170,
       width: double.infinity,
+      height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
@@ -88,21 +90,31 @@ class _UserImagePickerState extends State<UserImagePicker> {
       ),
       child: Column(
         children: [
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           _pickedImageFile == null
               ? Container(
-                  child: Icon(
-                    Icons.account_circle,
-                    color: Colors.white,
-                    size: 100,
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  height: 140,
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Icon(Icons.store, size: 100, color: segundaCor),
+                      Text(
+                        'Adicione uma foto do seu negócio',
+                        style: TextStyle(fontSize: 20, color: segundaCor),
+                      ),
+                    ],
                   ),
                 )
-              : CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: _pickedImageFile != null
-                      ? FileImage(_pickedImageFile)
-                      : null,
+              : Container(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(_pickedImageFile),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
           TextButton.icon(
             onPressed: () {
@@ -110,7 +122,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
             },
             icon: Icon(Icons.image, color: Colors.white),
             label: Text(
-              'Adicionar Imagem',
+              'Adicionar imagem',
               style: TextStyle(color: Colors.white),
             ),
           ),

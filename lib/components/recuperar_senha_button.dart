@@ -1,3 +1,4 @@
+import 'package:alugueja/pages/recuperar_senha/recuperar_senha_page.dart';
 import 'package:flutter/material.dart';
 
 class RecuperarSenhaButton extends StatelessWidget {
@@ -10,7 +11,14 @@ class RecuperarSenhaButton extends StatelessWidget {
           'Recuperar Senha',
           textAlign: TextAlign.center,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecuperarSenha(),
+            ),
+          );
+        },
       ),
     );
   }

@@ -39,11 +39,9 @@ class Messages extends StatelessWidget {
               ? MessageBubble(
                   chatDocs[i]['text'],
                   chatDocs[i]['userName'],
-                  chatDocs[i]['userIdUm'] == user.uid
-                      ? true
-                      : chatDocs[i]['userIdDois'] == user.uid
-                          ? true
-                          : false,
+                  chatDocs[i]['userId'] == user.uid,
+                  chatDocs[i]['imageUrl'],
+
                   //key: ValueKey(chatDocs[i].hashCode),
                 )
               : SizedBox(),

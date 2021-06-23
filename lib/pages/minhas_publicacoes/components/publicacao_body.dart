@@ -1,4 +1,4 @@
-import 'package:alugueja/pages/detalhes_publicacao/components/detalhes_publicacao_body.dart';
+import 'package:alugueja/pages/detalhes_publicacao/components/detalhes_publicacao_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,85 +15,143 @@ class PublicacaoBody extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('publicacao')
-          .where("userId", isEqualTo: user.uid)
+          .orderBy(
+            'createdAt',
+            descending: true,
+          )
           .snapshots(),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
+        if (snapshot.data == null) {
+          return Center(child: CircularProgressIndicator());
+        }
+
         final feedDocs = snapshot.data.docs;
         return Container(
           height: MediaQuery.of(context).size.height,
           child: ListView.builder(
             itemCount: feedDocs.length,
             itemBuilder: (ctx, index) {
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      color: primeiraCor,
-                    ),
-                    ListTile(
-                      title: Text(
-                        feedDocs[index]['titulo'],
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      subtitle: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Data da publicação: ',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+              if (feedDocs[index]['userId'] == user.uid) {
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  child: Column(
+                    children: [
+                      feedDocs[index]['imageUrl'] != ''
+                          ? Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:
+                                      NetworkImage(feedDocs[index]['imageUrl']),
+                                  fit: BoxFit.fill,
                                 ),
                               ),
-                              Text(
-                                DateFormat('d MMM y').format(
-                                    feedDocs[index]['createdAt'].toDate()),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Valor do Aluguel: ',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                            )
+                          : Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    primeiraCor,
+                                    quartaCor,
+                                  ],
                                 ),
                               ),
-                              Text(
-                                feedDocs[index]['valor'],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.store,
+                                      size: 100, color: segundaCor),
+                                  Text(
+                                    'Adicione uma foto do seu negócio',
+                                    style: TextStyle(
+                                        fontSize: 20, color: segundaCor),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          TextButton(
-                            child: Text(
-                              '+ detalhes',
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetalhesPublicacaoBody(
-                                    valorId: feedDocs[index].id,
+                      SizedBox(height: 5),
+                      ListTile(
+                        title: Text(
+                          feedDocs[index]['titulo'],
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        subtitle: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Data da publicação: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
+                                Text(
+                                  DateFormat('d MMM y').format(
+                                      feedDocs[index]['createdAt'].toDate()),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Valor do Aluguel: ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  r'R$ ' + feedDocs[index]['valor'] + ',00',
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              child: Text(
+                                '+ detalhes',
+                              ),
+                              onPressed: () {
+                                if (user.uid != feedDocs[index]['userId'])
+                                  FirebaseFirestore.instance
+                                      .collection('notificacao')
+                                      .add({
+                                    'userId': feedDocs[index]['userId'],
+                                    'titulo': feedDocs[index]['titulo'],
+                                    'createdAt': Timestamp.now(),
+                                  });
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetalhesPublicacaoPage(
+                                      valorId: feedDocs[index].id,
+                                      userId: feedDocs[index]['userId'],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height,
+                  color: Colors.white,
+                );
+              }
             },
           ),
         );

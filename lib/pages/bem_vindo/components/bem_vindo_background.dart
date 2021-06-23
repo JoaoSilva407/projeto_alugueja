@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../constants.dart';
+
 class BemVindoBackground extends StatelessWidget {
   final Widget child;
 
@@ -16,8 +18,21 @@ class BemVindoBackground extends StatelessWidget {
       width: double.infinity,
       color: Colors.white,
       child: Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         children: [
+          Column(
+            children: [
+              SizedBox(height: 40),
+              Text(
+                'Bem vindo',
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: primeiraCor,
+                ),
+              ),
+            ],
+          ),
           child,
         ],
       ),

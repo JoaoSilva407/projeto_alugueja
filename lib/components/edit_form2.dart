@@ -1,45 +1,33 @@
+import 'package:alugueja/components/validate_components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
-class EditForm extends StatefulWidget {
+class EditForm2 extends StatefulWidget {
   String initialValue;
-  String valueKey;
-  String campo;
-  String troca;
-  IconData icone;
-  String colecao;
-  TextInputType keyBoardType;
-  Function validator;
-  List<TextInputFormatter> list;
+  String initialValue2;
   dynamic valorId;
 
-  EditForm({
+  EditForm2({
     Key key,
     @required this.initialValue,
-    @required this.valueKey,
-    @required this.campo,
-    @required this.troca,
-    @required this.icone,
-    @required this.colecao,
-    this.keyBoardType,
-    this.validator,
-    this.list,
+    @required this.initialValue2,
     this.valorId,
   }) : super(key: key);
 
   @override
-  _EditFormState createState() => _EditFormState();
+  _EditForm2State createState() => _EditForm2State();
 }
 
-class _EditFormState extends State<EditForm> {
+class _EditForm2State extends State<EditForm2> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final User user = FirebaseAuth.instance.currentUser;
 
   String valor;
+  String valor2;
 
   _submit() {
     bool isValido = _formKey.currentState.validate();
@@ -47,10 +35,11 @@ class _EditFormState extends State<EditForm> {
 
     if (isValido) {
       FirebaseFirestore.instance
-          .collection(widget.colecao)
-          .doc(widget.colecao == 'users' ? user.uid : widget.valorId)
+          .collection('publicacao')
+          .doc(widget.valorId)
           .update({
-        widget.troca: valor,
+        'endereco': valor,
+        'numero': valor2,
       });
       Navigator.pop(context);
     }
@@ -69,19 +58,39 @@ class _EditFormState extends State<EditForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
-                  keyboardType: widget.keyBoardType,
                   enableSuggestions: false,
-                  key: ValueKey(widget.valueKey),
+                  key: ValueKey('endereco'),
                   decoration: InputDecoration(
-                    labelText: widget.campo,
+                    labelText: 'Endereço',
                     prefixIcon: Icon(
-                      widget.icone,
+                      Icons.streetview,
                     ),
                   ),
                   initialValue: widget.initialValue,
                   onChanged: (value) => valor = value,
-                  validator: (value) => widget.validator(value),
-                  inputFormatters: widget.list,
+                  validator: (value) =>
+                      ValidateComponents.validarEndereco(value),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.datetime,
+                  enableSuggestions: false,
+                  key: ValueKey('numero'),
+                  decoration: InputDecoration(
+                    labelText: 'Número',
+                    prefixIcon: Icon(
+                      Icons.streetview,
+                    ),
+                  ),
+                  initialValue: widget.initialValue2,
+                  onChanged: (value) => valor2 = value,
+                  validator: (value) => ValidateComponents.validarNumero(value),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(4),
+                  ],
                 ),
                 SizedBox(
                   height: 15,

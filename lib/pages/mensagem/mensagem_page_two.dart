@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'components/perfil_body.dart';
+import 'components/mensagem_components.dart';
 
-class PerfilPage extends StatelessWidget {
+class MensagemPageTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
-          'Perfil',
+          'Minhas mensagens',
           style: TextStyle(
             fontSize: 30,
             color: Colors.white,
           ),
         ),
-        elevation: 1,
       ),
-      body: PerfilBody(),
+      body: MensagemComponents(),
     );
   }
 }

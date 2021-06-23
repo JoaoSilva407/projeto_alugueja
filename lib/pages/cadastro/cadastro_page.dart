@@ -15,9 +15,22 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
+  final auth = FirebaseAuth.instance;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  final auth = FirebaseAuth.instance;
+  void showSnack(String title) {
+    final snackbar = SnackBar(
+      content: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15,
+        ),
+      ),
+      backgroundColor: Theme.of(context).errorColor,
+    );
+    _scaffoldMessengerKey.currentState.showSnackBar(snackbar);
+  }
 
   Future<void> _recebeSubmit(UserModel userModel) async {
     UserCredential authResult;
@@ -70,12 +83,11 @@ class _CadastroPageState extends State<CadastroPage> {
     } on PlatformException catch (erro) {
       final msg =
           erro.message ?? 'Ocorreu um erro! Verifique suas credenciais!';
-      _scaffoldMessengerKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: Theme.of(context).errorColor,
-        ),
-      );
+      showSnack(msg);
+    } on FirebaseAuthException catch (erro) {
+      final msg =
+          erro.message ?? 'Ocorreu um erro! Verifique suas credenciais!';
+      showSnack(msg);
     } catch (erro) {
       print(erro);
     }
@@ -83,15 +95,26 @@ class _CadastroPageState extends State<CadastroPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: primeiraCor,
+    return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Cadastro',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: primeiraCor,
+          elevation: 0,
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
         ),
+        body: CadastroBody(onSubmit: _recebeSubmit),
       ),
-      body: CadastroBody(onSubmit: _recebeSubmit),
     );
   }
 }

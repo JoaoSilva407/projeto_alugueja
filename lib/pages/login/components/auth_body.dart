@@ -1,5 +1,6 @@
 import 'package:alugueja/components/recuperar_senha_button.dart';
 import 'package:alugueja/components/rounded_button.dart';
+import 'package:alugueja/components/validate_components.dart';
 import 'package:alugueja/models/user_model.dart';
 import 'package:alugueja/pages/cadastro/cadastro_page.dart';
 import 'package:flutter/material.dart';
@@ -47,16 +48,18 @@ class _AuthBodyState extends State<AuthBody> {
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Form(
-          autovalidateMode: AutovalidateMode.always,
           key: _formKey,
           child: Column(
             children: <Widget>[
               SizedBox(
                 height: 10,
               ),
-              SizedBox(
-                height: 110,
-                child: Image.asset('assets/Logo.png'),
+              Container(
+                child: Icon(
+                  Icons.account_circle,
+                  size: 150,
+                  color: primeiraCor,
+                ),
               ),
               Container(
                 child: TextFormField(
@@ -72,12 +75,7 @@ class _AuthBodyState extends State<AuthBody> {
                     ),
                   ),
                   onChanged: (value) => _userModel.email = value,
-                  validator: (value) {
-                    if (value == null || !value.contains('@')) {
-                      return 'Forneça email válido.';
-                    }
-                    return null;
-                  },
+                  validator: (value) => ValidateComponents.validarEmail(value),
                 ),
               ),
               TextFormField(
@@ -103,12 +101,7 @@ class _AuthBodyState extends State<AuthBody> {
                   ),
                 ),
                 onChanged: (value) => _userModel.password = value,
-                validator: (value) {
-                  if (value == null || value.trim().length < 4) {
-                    return 'Minimo para senha: 4 Caracteres.';
-                  }
-                  return null;
-                },
+                validator: (value) => ValidateComponents.validarSenha(value),
               ),
               Container(
                 alignment: Alignment.centerRight,
@@ -120,6 +113,12 @@ class _AuthBodyState extends State<AuthBody> {
                 buttonColor: primeiraCor,
                 textColor: quintaCor,
                 borderColor: primeiraCor,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Divider(
+                  color: Colors.grey,
+                ),
               ),
               Text(
                 'Possui Cadastro?',

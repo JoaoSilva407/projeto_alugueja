@@ -19,6 +19,20 @@ class _AuthPageState extends State<AuthPage> {
 
   bool _isLoading = false;
 
+  void showSnack(String title) {
+    final snackbar = SnackBar(
+      content: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15,
+        ),
+      ),
+      backgroundColor: Theme.of(context).errorColor,
+    );
+    _scaffoldMessengerKey.currentState.showSnackBar(snackbar);
+  }
+
   Future<void> _recebeSubmit(UserModel userModel) async {
     setState(() {
       _isLoading = true;
@@ -48,12 +62,11 @@ class _AuthPageState extends State<AuthPage> {
     } on PlatformException catch (erro) {
       final msg =
           erro.message ?? 'Ocorreu um erro! Verifique suas credenciais!';
-      _scaffoldMessengerKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: Theme.of(context).errorColor,
-        ),
-      );
+      showSnack(msg);
+    } on FirebaseAuthException catch (erro) {
+      final msg =
+          erro.message ?? 'Ocorreu um erro! Verifique suas credenciais!';
+      showSnack(msg);
     } catch (erro) {
       print(erro);
     } finally {

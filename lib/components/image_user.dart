@@ -79,7 +79,12 @@ class _ImageUserState extends State<ImageUser> {
                       color: Colors.red,
                     ),
                     title: new Text('Remover foto'),
-                    onTap: () => {},
+                    onTap: () => {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .update({'imageUrl': ''}),
+                    },
                   ),
                 ],
               ),
@@ -113,6 +118,14 @@ class _ImageUserState extends State<ImageUser> {
                 blurRadius: 10.0,
               ),
             ],
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                primeiraCor,
+                quartaCor,
+              ],
+            ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

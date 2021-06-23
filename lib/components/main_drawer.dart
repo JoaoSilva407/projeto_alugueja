@@ -1,10 +1,12 @@
 import 'package:alugueja/pages/bem_vindo/bem_vindo_page.dart';
-import 'package:alugueja/pages/mensagem/mensagem_page.dart';
+import 'package:alugueja/pages/mensagem/mensagem_page_two.dart';
 import 'package:alugueja/pages/minhas_publicacoes/publicacao_page.dart';
 import 'package:alugueja/pages/perfil/perfil_page.dart';
+import 'package:alugueja/pages/sobre/sobre_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../pages/favoritos/favoritos_page.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -18,6 +20,13 @@ class MainDrawer extends StatelessWidget {
           .snapshots(),
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.data == null) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || !snapshot.data.exists) {
           return Center(child: CircularProgressIndicator());
         }
 
@@ -65,13 +74,15 @@ class MainDrawer extends StatelessWidget {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          snapshot.data['sobrenome'],
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
+                        snapshot.data['sobrenome'] != ''
+                            ? Text(
+                                snapshot.data['sobrenome'],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : SizedBox(),
                       ],
                     ),
                   ],
@@ -96,6 +107,10 @@ class MainDrawer extends StatelessWidget {
                   );
                 },
               ),
+              Divider(
+                height: 0,
+                color: Colors.grey,
+              ),
               ListTile(
                 leading: Icon(
                   Icons.text_snippet,
@@ -115,12 +130,16 @@ class MainDrawer extends StatelessWidget {
                   );
                 },
               ),
+              Divider(
+                height: 0,
+                color: Colors.grey,
+              ),
               ListTile(
                 leading: Icon(
                   Icons.message,
                 ),
                 title: Text(
-                  'Mensagem',
+                  'Minhas mensagens',
                   style: TextStyle(
                     fontSize: 18,
                   ),
@@ -129,34 +148,60 @@ class MainDrawer extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MensagemPage(),
+                      builder: (context) => MensagemPageTwo(),
                     ),
                   );
                 },
               ),
+              Divider(
+                height: 0,
+                color: Colors.grey,
+              ),
               ListTile(
                 leading: Icon(
-                  Icons.settings,
+                  Icons.star,
                 ),
                 title: Text(
-                  'Configuração',
+                  'Conferir depois',
                   style: TextStyle(
                     fontSize: 18,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FavoritosPage(),
+                    ),
+                  );
+                },
+              ),
+              Divider(
+                height: 0,
+                color: Colors.grey,
               ),
               ListTile(
                 leading: Icon(
                   Icons.help,
                 ),
                 title: Text(
-                  'Ajuda',
+                  'Sobre o APP',
                   style: TextStyle(
                     fontSize: 18,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SobrePage(),
+                    ),
+                  );
+                },
+              ),
+              Divider(
+                height: 0,
+                color: Colors.grey,
               ),
               ListTile(
                 leading: Icon(

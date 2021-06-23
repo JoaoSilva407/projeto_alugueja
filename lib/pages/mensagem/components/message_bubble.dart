@@ -6,8 +6,10 @@ class MessageBubble extends StatelessWidget {
   final String userName;
   final String message;
   final bool belongsToMe;
+  final String photo;
 
-  MessageBubble(this.message, this.userName, this.belongsToMe, {this.key})
+  MessageBubble(this.message, this.userName, this.belongsToMe, this.photo,
+      {this.key})
       : super(key: key);
 
   @override
@@ -43,13 +45,24 @@ class MessageBubble extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
-              Text(
-                message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
+              message != ''
+                  ? Text(
+                      message,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    )
+                  : Container(
+                      width: 300,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(photo),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),
